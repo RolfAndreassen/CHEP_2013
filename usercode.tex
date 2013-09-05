@@ -1,1 +1,55 @@
 \section{User-level code}
+\label{sec:usercode}
+
+The purpose of GooFit is to give users access to the parallelising power of CUDA
+without requiring them to write CUDA code. At the most basic level, GooFit objects
+representing PDFs, \texttt{GooPdf}s, can be created and combined in plain C++. Only
+if a user needs to represent a function outside the existing GooFit classes does he
+need to do any CUDA coding; Section~\ref{sec:newpdfs} shows how to create new PDF classes.
+We intend, however, that this should be a rarity, and that the existing PDF classes
+should cover all the most common cases. 
+
+A GooFit program has four main components: 
+\begin{itemize}
+\item The PDF that models the physical process, represented by a \texttt{GooPdf} object.
+\item The fit parameters with respect to which the likelihood is maximised,
+represented by \texttt{Variable}s contained in the \texttt{GooPdf}. 
+\item The data, gathered into a \texttt{DataSet} object containing one or more \texttt{Variable}s.
+\item A \texttt{FitManager} object which forms the interface between MINUIT
+(or, in principle, a different maximising algorithm) and the \texttt{GooPdf}.
+\end{itemize}
+Listing~\ref{list:expexp} shows a simple fit of an exponential function.
+\begin{listing}
+\label{list:expexp} 
+\emph{Fit for unknown parameter $\alpha$ in $e^{\alpha x}$. GooFit classes
+are shown in red, important operations in blue.}
+
+\begin{Verbatim}[commandchars=\\\$\#]
+int main (int argc, char** argv) {
+  // Independent variable. 
+  \fvtextcolor$red#$Variable*# xvar = new \fvtextcolor$red#$Variable#("xvar", 0, log(RAND_MAX)); 
+  
+  // Create data set
+  \fvtextcolor$red#$UnbinnedDataSet# data(xvar);
+  for (int i = 0; i < 100000; ++i) {
+    // Generate toy event
+    xvar->value = xvar->upperlimit - log(1+rand());
+    if (xvar->value < 0) continue;
+    // ...and add to data set. 
+    \fvtextcolor$blue#$data.addEvent();# 
+  }
+  
+  // Create fit parameter
+  \fvtextcolor$red#$Variable*# alpha = new \fvtextcolor$red#$Variable#("alpha", -2, 0.1, -10, 10);
+  // Create GooPdf object
+  \fvtextcolor$red#$ExpPdf*# exppdf = new \fvtextcolor$red#$ExpPdf#("exppdf", xvar, alpha); 
+  // Move data to GPU
+  \fvtextcolor$blue#$exppdf->setData(&data);#
+
+  \fvtextcolor$red#$FitManager# fitter(exppdf);
+  \fvtextcolor$blue#$fitter.fit();# 
+
+  return 0;
+}
+\end{Verbatim}
+\end{listing}
