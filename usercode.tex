@@ -19,6 +19,11 @@ represented by \texttt{Variable}s contained in the \texttt{GooPdf}.
 (or, in principle, a different maximising algorithm) and the \texttt{GooPdf}.
 \end{itemize}
 Listing~\ref{list:expexp} shows a simple fit of an exponential function.
+%Points of note are the creations of \texttt{Variable} objects, which 
+%take a name and either a pair of values indicating lower and upper limits,
+%or else four values
+
+
 \begin{listing}
 \label{list:expexp} 
 \emph{Fit for unknown parameter $\alpha$ in $e^{\alpha x}$. GooFit classes
@@ -26,7 +31,7 @@ are shown in red, important operations in blue.}
 
 \begin{Verbatim}[commandchars=\\\$\#]
 int main (int argc, char** argv) {
-  // Independent variable. 
+  // Independent variable. Name, lower limit, upper limit. 
   \fvtextcolor$red#$Variable*# xvar = new \fvtextcolor$red#$Variable#("xvar", 0, log(RAND_MAX)); 
   
   // Create data set
@@ -39,9 +44,9 @@ int main (int argc, char** argv) {
     \fvtextcolor$blue#$data.addEvent();# 
   }
   
-  // Create fit parameter
+  // Create fit parameter - name, initial value, step size, lower and upper limit. 
   \fvtextcolor$red#$Variable*# alpha = new \fvtextcolor$red#$Variable#("alpha", -2, 0.1, -10, 10);
-  // Create GooPdf object
+  // Create GooPdf object - name, independent variable, fit parameter.
   \fvtextcolor$red#$ExpPdf*# exppdf = new \fvtextcolor$red#$ExpPdf#("exppdf", xvar, alpha); 
   // Move data to GPU
   \fvtextcolor$blue#$exppdf->setData(&data);#
@@ -53,3 +58,5 @@ int main (int argc, char** argv) {
 }
 \end{Verbatim}
 \end{listing}
+
+

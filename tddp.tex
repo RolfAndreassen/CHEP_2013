@@ -1,3 +1,22 @@
 \section{Real-world example: Time-dependent Dalitz-plot fit}
 \label{sec:tddp}
 
+To ensure the usefulness of GooFit in real-world physics problems,
+we have, simultaneously with developing GooFit, used it as our fitting
+tool in a time-dependent Dalitz-plot analysis of the decay $D^0\to\pi^+\pi^-\pi^0$. 
+This fit has been our ``driver'' for GooFit, in that every
+time we needed a feature for the physics, we added it to the GooFit
+engine. 
+
+This mixing fit is rather complex, involving, for the signal component, 
+16 complex resonances to describe the Dalitz-plot distribution,
+a time component where hyperbolic and trigonometric functions
+are convolved with Gaussian resolution functions, and a distribution
+of the uncertainty $\sigma_t$ on the decay time which varies across
+the Dalitz plot. All in all there are about 40 free parameters in the
+fit, and the data set is roughly a hundred thousand events; running this
+on a modern CPU takes between ten and twenty hours, depending on the 
+data. Using GooFit this is reduced to a much more comfortable 3-5 \emph{minutes},
+a speedup factor in the region of 200. 
+
+
