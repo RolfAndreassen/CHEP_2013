@@ -2,4 +2,13 @@
 \label{sec:intro}
 
 Parameter estimation is a crucial part of many physics analyses. 
+GooFit is an interface between the MINUIT minimisation algorithm
+and a Graphics Processing Unit (GPU), which allows a probability
+density function (PDF) to be evaluated in parallel, that is, for
+several hundred events at once. Since PDF evaluation on large datasets
+is usually the bottleneck in the MINUIT algorithm, this can result
+in speedups of up to $\sim 200$ in real problems - which can be the
+difference between waiting overnight for the answer, or making a cup
+of tea. 
+
 

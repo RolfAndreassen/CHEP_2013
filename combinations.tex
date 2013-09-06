@@ -1,3 +1,45 @@
 \section{Combining functions}
 \label{sec:combining}
 
+To create arbitrarily-complex PDFs, the user can combine 
+simple ones like the exponential and Gaussian in several
+ways, the most common being addition and multiplication.
+For example, a two-dimensional distribution, described by
+a separate exponential in each of two variables $x$ and $y$, may be represented
+as a \texttt{ProdPdf} object, as shown in Listing~\ref{list:prodpdf}.
+
+\begin{listing}
+\label{list:prodpdf} \emph{Product of two exponentials.}
+
+\begin{Verbatim}[commandchars=\\\$\#]
+int main (int argc, char** argv) {
+  Variable* xvar = new Variable("xvar", 0, log(1+RAND_MAX/2)); 
+  Variable* yvar = new Variable("yvar", 0, log(1+RAND_MAX/2)); 
+  
+  vector<Variable*> varList;
+  varList.push_back(xvar);
+  varList.push_back(yvar);
+  UnbinnedDataSet data(varList);
+  for (int i = 0; i < 100000; ++i) {
+    xvar->value = xvar->upperlimit - log(1+rand()/2);
+    yvar->value = yvar->upperlimit - log(1+rand()/2);
+    data.addEvent(); 
+  }
+  
+  Variable* alpha_x = new Variable("alpha_x", -2.4, 0.1, -10, 10);
+  Variable* alpha_y = new Variable("alpha_y", -1.1, 0.1, -10, 10);
+  vector<\fvtextcolor$red#$PdfBase*#> pdfList;
+  pdfList.push_back(new ExpPdf("exp_x", xvar, alpha_x)); 
+  pdfList.push_back(new ExpPdf("exp_y", yvar, alpha_y)); 
+
+  \fvtextcolor$red#$ProdPdf*# product = new \fvtextcolor$red#$ProdPdf#("product", pdfList);
+  product->setData(&data);
+
+  FitManager fitter(product);
+  fitter.fit();
+
+  return 0;
+}
+\end{Verbatim}
+\end{listing}
+
